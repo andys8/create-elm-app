@@ -17,6 +17,8 @@ const publicPath = configPaths.servedPath
 // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
 const publicUrl = publicPath.slice(0, -1)
 
+const extractCSS = new ExtractTextPlugin('css/[name].[contenthash:8].css')
+
 module.exports = {
   bail: true,
 
@@ -39,7 +41,7 @@ module.exports = {
   },
 
   module: {
-    noParse: /\.elm$/,
+    noParse: /^((?!Stylesheet).)*\.elm.*$/,
 
     rules: [
 
@@ -58,7 +60,7 @@ module.exports = {
 
       {
         test: /\.elm$/,
-        exclude: [/elm-stuff/, /node_modules/],
+        exclude: [/elm-stuff/, /node_modules/, /Stylesheets\.elm$/],
 
         // Use the local installation of elm-make
         loader: require.resolve('elm-webpack-loader'),
@@ -68,8 +70,24 @@ module.exports = {
       },
 
       {
+        test: /Stylesheets\.elm$/,
+        use: extractCSS.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                minimize: true
+              }
+            },
+            'elm-css-webpack-loader'
+          ]
+        })
+      },
+
+      {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
+        use: extractCSS.extract({
           fallback: require.resolve('style-loader'),
           use: [
             {
@@ -162,6 +180,6 @@ module.exports = {
       }
     }),
 
-    new ExtractTextPlugin('css/[name].[contenthash:8].css')
+    extractCSS
   ]
 }

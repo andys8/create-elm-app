@@ -46,13 +46,13 @@ module.exports = {
   },
 
   module: {
-    noParse: /\.elm$/,
+    noParse: /^((?!Stylesheet).)*\.elm.*$/,
 
     rules: [
 
       {
         test: /\.js$/,
-        exclude: [/elm-stuff/, /node_modules/],
+        exclude: [/elm-stuff/, /node_modules/, /Stylesheets\.elm$/],
         loader: require.resolve('babel-loader'),
         query: {
           presets: [
@@ -80,6 +80,15 @@ module.exports = {
               forceWatch: true
             }
           }
+        ]
+      },
+
+      {
+        test: /Stylesheets\.elm$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'elm-css-webpack-loader',
         ]
       },
 
