@@ -94,9 +94,9 @@ module.exports = {
       {
         test: /Stylesheets\.elm$/,
         use: [
-          'style-loader',
-          'css-loader',
-          'elm-css-webpack-loader',
+          require.resolve('style-loader'),
+          require.resolve('css-loader'),
+          require.resolve('elm-css-webpack-loader')
         ]
       },
 

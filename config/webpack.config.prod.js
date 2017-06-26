@@ -101,7 +101,9 @@ module.exports = {
                 minimize: true
               }
             },
-            'elm-css-webpack-loader'
+            {
+              loader: require.resolve('elm-css-webpack-loader')
+            }
           ]
         })
       },
